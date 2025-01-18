@@ -1,12 +1,16 @@
 const form = document.getElementById('config-form');
 const messageDiv = document.getElementById('message');
 const appsListDiv = document.getElementById('apps-list');
+const addBtn = document.getElementById('add-btn');
+const editBtn = document.getElementById('edit-btn');
+
+let editingApp = null;
 
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
   const formData = new FormData(form);
   const response = await fetch('/config', {
-    method: 'POST',
+    method: editingApp ? 'PUT' : 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
@@ -17,11 +21,11 @@ form.addEventListener('submit', async (event) => {
     messageDiv.textContent = data.message;
     messageDiv.style.color = 'green';
     renderAppsList();
+    resetForm();
   } else {
     messageDiv.textContent = `Error: ${data.errors.map(error => error.msg).join(', ')}`;
     messageDiv.style.color = 'red';
   }
-  form.reset();
 });
 
 function renderAppsList() {
@@ -36,13 +40,34 @@ function renderAppsList() {
     .then(data => {
       data.forEach(app => {
         const li = document.createElement('li');
-        li.textContent = `IP: ${app.ip}, Port: ${app.port}, URI: ${app.uri}, Build Path: ${app.buildPath}`;
+        li.textContent = app.name;
+        li.addEventListener('click', () => {
+          editingApp = app;
+          populateForm(app);
+          addBtn.disabled = true;
+          editBtn.disabled = false;
+        });
         appsListUl.appendChild(li);
       });
     })
     .catch(error => {
       console.error('Error fetching apps list:', error);
     });
+}
+
+function populateForm(app) {
+  form.name.value = app.name;
+  form.ip.value = app.ip;
+  form.port.value = app.port;
+  form.uri.value = app.uri;
+  form.buildPath.value = app.buildPath;
+}
+
+function resetForm() {
+  form.reset();
+  editingApp = null;
+  addBtn.disabled = false;
+  editBtn.disabled = true;
 }
 
 renderAppsList();

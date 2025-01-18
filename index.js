@@ -5,7 +5,7 @@ const fs = require('fs');
 
 const app = express();
 const port = process.env.PORT || 3000;
-const host = process.env.HOST || '0.0.0.0'; // Bind to all available network interfaces
+const host = process.env.HOST || '0.0.0.0';
 const configFile = path.join(__dirname, 'config.json');
 
 app.use(express.json());
@@ -14,7 +14,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 let apps = [];
 
-// Load app configurations from the config file
 try {
   const configData = fs.readFileSync(configFile, 'utf8');
   apps = JSON.parse(configData);
@@ -29,6 +28,7 @@ app.get('/', (req, res) => {
 });
 
 app.post('/config', [
+  body('name').isString().withMessage('Invalid app name'),
   body('ip').isIP().withMessage('Invalid IP address'),
   body('port').isInt({ min: 1, max: 65535 }).withMessage('Invalid port number'),
   body('uri').isString().withMessage('Invalid URI'),
@@ -53,6 +53,7 @@ app.post('/config', [
   }
 
   const app = {
+    name: req.body.name,
     ip: req.body.ip,
     port: req.body.port,
     uri: req.body.uri,
@@ -62,6 +63,10 @@ app.post('/config', [
   apps.push(app);
   saveConfigs();
   res.json({ message: 'App added successfully' });
+});
+
+app.get('/config', (req, res) => {
+  res.json(apps);
 });
 
 apps.forEach(app => {
