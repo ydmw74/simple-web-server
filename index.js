@@ -69,8 +69,8 @@ app.get('/config', (req, res) => {
   res.json(apps);
 });
 
-apps.forEach(app => {
-  app.use(app.uri, express.static(path.join(__dirname, app.buildPath)));
+apps.forEach(appConfig => {
+  app.use(appConfig.uri, express.static(path.join(__dirname, appConfig.buildPath)));
 });
 
 app.listen(port, host, () => {
