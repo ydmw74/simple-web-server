@@ -87,6 +87,11 @@ app.get('/config', (req, res) => {
 
 apps.forEach(appConfig => {
   app.use(appConfig.uri, express.static(path.join(__dirname, appConfig.buildPath)));
+
+  // Fallback-Route für Client-seitiges Routing
+  app.get(`${appConfig.uri}/*`, (req, res) => {
+    res.sendFile(path.join(__dirname, appConfig.buildPath, 'index.html'));
+  });
 });
 
 app.listen(port, host, () => {
