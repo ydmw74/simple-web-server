@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Web Server Configuration</title>
+  </head>
+  <body>
+    <h1>Web Server Configuration</h1>
+    <form id="config-form">
+      <label for="ip">IP Address:</label>
+      <input type="text" id="ip" name="ip" required>
+      <br>
+      <label for="port">Port:</label>
+      <input type="number" id="port" name="port" min="1" max="65535" required>
+      <br>
+      <label for="uri">URI:</label>
+      <input type="text" id="uri" name="uri" required>
+      <br>
+      <label for="buildPath">Build Path:</label>
+      <input type="text" id="buildPath" name="buildPath" required>
+      <br>
+      <button type="submit">Save Configuration</button>
+    </form>
+    <script>
+      const form = document.getElementById('config-form');
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const formData = new FormData(form);
+        const response = await fetch('/config', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(Object.fromEntries(formData))
+        });
+        const data = await response.json();
+        if (response.ok) {
+          alert(data.message);
+        } else {
+          alert(`Error: ${data.errors.map(error => error.msg).join(', ')}`);
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Web Server Configuration</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="container">
+      <h1>Web Server Configuration</h1>
+      <form id="config-form">
+        <div class="form-group">
+          <label for="ip">IP Address:</label>
+          <input type="text" id="ip" name="ip" required>
+        </div>
+        <div class="form-group">
+          <label for="port">Port:</label>
+          <input type="number" id="port" name="port" min="1" max="65535" required>
+        </div>
+        <div class="form-group">
+          <label for="uri">URI:</label>
+          <input type="text" id="uri" name="uri" required>
+        </div>
+        <div class="form-group">
+          <label for="buildPath">Build Path:</label>
+          <input type="text" id="buildPath" name="buildPath" required>
+        </div>
+        <button type="submit" class="btn">Add App</button>
+      </form>
+      <div id="message"></div>
+      <div id="apps-list"></div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
