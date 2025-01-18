@@ -5,6 +5,7 @@ const fs = require('fs');
 
 const app = express();
 const port = process.env.PORT || 3000;
+const host = process.env.HOST || '0.0.0.0'; // Bind to all available network interfaces
 const configFile = path.join(__dirname, 'config.json');
 
 app.use(express.json());
@@ -67,8 +68,8 @@ apps.forEach(app => {
   app.use(app.uri, express.static(path.join(__dirname, app.buildPath)));
 });
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+app.listen(port, host, () => {
+  console.log(`Server running at http://${host}:${port}`);
 });
 
 function saveConfigs() {
